@@ -1,0 +1,31 @@
+[package]
+name = "sharks"
+version = "0.1.0"
+authors = ["Aitor Ruano <codearm@pm.me>"]
+description = "Fast, secure and minimal Shamir's Secret Sharing library crate"
+homepage = "https://github.com/c0dearm/sharks"
+repository = "https://github.com/c0dearm/sharks"
+readme = "README.md"
+keywords = ["shamir", "secret", "sharing", "share", "crypto"]
+categories = ["algorithms", "cryptography", "mathematics"]
+license = "MIT/Apache-2.0"
+edition = "2018"
+
+[badges]
+is-it-maintained-issue-resolution = { repository = "https://github.com/c0dearm/sharks" }
+is-it-maintained-open-issues = { repository = "https://github.com/c0dearm/sharks" }
+maintenance = { status = "actively-developed" }
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.7"
+num-bigint = "0.2"
+num-traits = "0.2"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "benchmarks"
+harness = false
