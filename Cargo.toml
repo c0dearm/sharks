@@ -12,8 +12,6 @@ license = "MIT/Apache-2.0"
 edition = "2018"
 
 [badges]
-is-it-maintained-issue-resolution = { repository = "https://github.com/c0dearm/sharks" }
-is-it-maintained-open-issues = { repository = "https://github.com/c0dearm/sharks" }
 maintenance = { status = "actively-developed" }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
