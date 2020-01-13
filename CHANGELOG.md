@@ -7,3 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2020-01-13
 ### Added
 - Initial version
+
+## [0.1.1] - 2020-01-13
+### Fixed
+- Typo in cargo description
+
+### Removed
+- Maintenance badges in cargo file
