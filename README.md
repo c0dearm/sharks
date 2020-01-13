@@ -1,5 +1,9 @@
 # Sharks
 
+[![CI](https://github.com/c0dearm/sharks/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/c0dearm/sharks/actions)
+[![Crate](https://img.shields.io/crates/v/sharks.svg)](https://crates.io/crates/sharks)
+[![Docs](https://docs.rs/sharks/badge.svg)](https://docs.rs/sharks)
+
 Fast, small and secure [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) library crate
 
 Documentation:
