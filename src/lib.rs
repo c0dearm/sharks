@@ -1,7 +1,20 @@
+//! Fast, small and secure [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) library crate
+//!
+//! # Usage example
+//! ```
+//! // Configure algorithm with minimum 3 shares to recover secret and security level 12
+//! let shamir = sharks::SecretShares::new(3, 12).unwrap();
+//! // Generate 3 shares for the 12345 secret
+//! let shares = shamir.iter_shares(12345).unwrap().take(3).collect();
+//! // Recover the secret from the shares
+//! let secret = shamir.secret_from(&shares).unwrap();
+//! assert_eq!(secret, 12345);
+//! ```
+
 use std::collections::HashMap;
 
-mod mersenne;
 mod math;
+mod mersenne;
 
 /// Generate new [Shamir's secret shares](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) or recover secrets from them.
 pub struct SecretShares {
@@ -10,14 +23,13 @@ pub struct SecretShares {
 }
 
 impl SecretShares {
-
     /// Returns a result containing a`SecretShares` instance if parameters are reasonable.
-    /// 
+    ///
     /// `security_level` is the index of the [Mersenne prime](https://en.wikipedia.org/wiki/Mersenne_prime) to use as the finite field prime modulo (the higher the more secure, but slower).
     /// Currently, only up to 12 is supported (`p=127, Mp = 2^127 - 1`).
-    /// 
+    ///
     /// If `min_shares` is larger or equal to the Mersenne prime an error is returned, as this configuration would generate insecure shares.
-    /// 
+    ///
     /// Example, create an instance with minimum 3 shares to recover a secret and 128 bits of security:
     /// ```
     /// let shamir = sharks::SecretShares::new(3, 12);
@@ -36,7 +48,7 @@ impl SecretShares {
     }
 
     /// Given a `secret` returns a result with an iterator which generates shares `(x, f(x))` for x from [1, p).
-    /// 
+    ///
     /// If `secret` is larger or equal than the Mersenne prime an error is returned, as it would be irrecoverable.
     ///  
     /// Example, generate 10 shares for secret `12345`:
@@ -55,9 +67,9 @@ impl SecretShares {
     }
 
     /// Given a set of distinct `shares`, returns a result with the recovered secret.
-    /// 
+    ///
     /// If the number of `shares` is less than the number of minimum shares an error is returned as the secret is irrecoverable.
-    /// 
+    ///
     /// Example, recover the `12345` secret:
     /// ```
     /// let shamir = sharks::SecretShares::new(3, 12).unwrap();
