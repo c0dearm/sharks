@@ -15,7 +15,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sharks = "0.1"
+sharks = "0.2"
 ```
 
 To get started using Sharks, see the [Rust docs](https://docs.rs/sharks)
@@ -34,12 +34,9 @@ like generating more shares than what's allowed by the finite field length.
 
 ## Limitations
 
-Currently only finite fields with modulus up to 128 bits (12th Mersenne prime) are supported. This means:
--    Only up to `2^128` shares can be generated.
--    Maximum secret length is 128 bits.
-
-This is imposed by the Rust maximum unsigned integer length, which is `u128`.
-Going around this limitation would mean using crates like `num-bigint` in most of the computations, reducing performance drastically.
+Because the Galois finite field it uses is [GF256](https://en.wikipedia.org/wiki/Finite_field#GF(p2)_for_an_odd_prime_p),
+only up to 255 shares can be generated for a given secret. A larger number would be insecure as shares would start duplicating.
+Nevertheless, the secret can be arbitrarily long as computations are performed on single byte chunks.
 
 ## Testing
 
@@ -48,9 +45,9 @@ You can run them with `cargo test` and `cargo bench`.
 
 ### Benchmark results [min mean max]
 
-| CPU                                       | obtain_shares_iterator          | step_shares_iterator            | recover_secret                  |
+| CPU                                       | obtain_shares_dealer            | step_shares_dealer              | recover_secret                  |
 | ----------------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- |
-| Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz  | [14.023 us 14.087 us 14.146 us] | [413.19 us 414.90 us 416.60 us] | [24.978 ms 25.094 ms 25.226 ms] |
+| Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz  | [1.4321 us 1.4339 us 1.4357 us] | [1.3385 ns 1.3456 ns 1.3552 ns] | [228.77 us 232.17 us 236.23 us] |
 
 # Contributing
 
