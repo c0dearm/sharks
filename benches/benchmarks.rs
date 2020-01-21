@@ -1,26 +1,25 @@
-use std::collections::HashMap;
-
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use sharks::SecretShares;
 
-fn secret_shares_generation(c: &mut Criterion) {
-    let shamir = SecretShares::new(1000, 128).unwrap();
-    let mut iter = shamir.iter_shares(12345).unwrap();
+use sharks::Sharks;
 
-    c.bench_function("obtain_shares_iterator", |b| {
-        b.iter(|| shamir.iter_shares(black_box(12345)))
+fn dealer(c: &mut Criterion) {
+    let sharks = Sharks(255);
+    let mut dealer = sharks.dealer(&[1]);
+
+    c.bench_function("obtain_shares_dealer", |b| {
+        b.iter(|| sharks.dealer(black_box(&[1])))
     });
-    c.bench_function("step_shares_iterator", |b| b.iter(|| iter.next()));
+    c.bench_function("step_shares_dealer", |b| b.iter(|| dealer.next()));
 }
 
-fn secret_from_shares(c: &mut Criterion) {
-    let shamir = SecretShares::new(10, 128).unwrap();
-    let shares: HashMap<u128, u128> = shamir.iter_shares(12345).unwrap().take(100).collect();
+fn recover(c: &mut Criterion) {
+    let sharks = Sharks(255);
+    let shares = sharks.dealer(&[1]).take(255).collect();
 
     c.bench_function("recover_secret", |b| {
-        b.iter(|| shamir.secret_from(black_box(&shares)))
+        b.iter(|| sharks.recover(black_box(&shares)))
     });
 }
 
-criterion_group!(benches, secret_shares_generation, secret_from_shares);
+criterion_group!(benches, dealer, recover);
 criterion_main!(benches);
