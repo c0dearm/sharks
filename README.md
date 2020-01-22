@@ -1,6 +1,7 @@
 # Sharks
 
 [![CI](https://github.com/c0dearm/sharks/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/c0dearm/sharks/actions)
+[![Codecov](https://codecov.io/gh/c0dearm/sharks/branch/master/graph/badge.svg)](https://codecov.io/gh/c0dearm/sharks)
 [![Crate](https://img.shields.io/crates/v/sharks.svg)](https://crates.io/crates/sharks)
 [![Docs](https://docs.rs/sharks/badge.svg)](https://docs.rs/sharks)
 
