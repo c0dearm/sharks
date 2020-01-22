@@ -10,9 +10,7 @@ use super::share::Share;
 // Where each (key, value) pair corresponds to one share, where the key is the `x` and the value is a vector of `y`,
 // where each element corresponds to one of the secret's byte chunks.
 pub fn interpolate(shares: &[Share]) -> Vec<u8> {
-    let n_chunks = shares[0].y.len();
-
-    (0..n_chunks)
+    (0..shares[0].y.len())
         .map(|s| {
             shares
                 .iter()

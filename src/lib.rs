@@ -11,7 +11,7 @@
 //! // Get 10 shares
 //! let shares: Vec<Share> = dealer.take(10).collect();
 //! // Recover the original secret!
-//! let secret = sharks.recover(&shares).unwrap();
+//! let secret = sharks.recover(shares.as_slice()).unwrap();
 //! assert_eq!(secret, vec![1, 2, 3, 4]);
 //! ```
 
@@ -35,7 +35,7 @@ pub use share::Share;
 /// // Get 10 shares
 /// let shares: Vec<Share> = dealer.take(10).collect();
 /// // Recover the original secret!
-/// let secret = sharks.recover(&shares).unwrap();
+/// let secret = sharks.recover(shares.as_slice()).unwrap();
 /// assert_eq!(secret, vec![1, 2, 3, 4]);
 /// ```
 pub struct Sharks(pub u8);
@@ -81,6 +81,8 @@ impl Sharks {
     /// // Not enough shares to recover secret
     /// assert!(secret.is_err());
     pub fn recover(&self, shares: &[Share]) -> Result<Vec<u8>, &str> {
+        // TODO: Discuss use of slice instead of hashmap here
+
         if shares.len() < self.0 as usize {
             Err("Not enough shares to recover original secret")
         } else {
