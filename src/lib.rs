@@ -64,8 +64,8 @@ impl Sharks {
         math::get_evaluator(polys)
     }
 
-    /// Given a `HashMap` of shares, recovers the original secret.
-    /// If the number of shares is less than the minimum threshold an `Err` is returned,
+    /// Given a slice of shares, recovers the original secret.
+    /// If the number of distinct shares is less than the minimum threshold an `Err` is returned,
     /// otherwise an `Ok` containing the secret.
     ///
     /// Example:
