@@ -19,9 +19,10 @@ mod field;
 mod math;
 mod share;
 
-use field::GF256;
-pub use share::Share;
 use std::collections::HashSet;
+
+pub use share::Share;
+use field::GF256;
 
 /// Tuple struct which implements methods to generate shares and recover secrets over a 256 bits Galois Field.
 /// Its only parameter is the minimum shares threshold.
