@@ -9,14 +9,25 @@ use super::share::Share;
 // The expected `shares` argument format is the same as the output by the `get_evaluator´ function.
 // Where each (key, value) pair corresponds to one share, where the key is the `x` and the value is a vector of `y`,
 // where each element corresponds to one of the secret's byte chunks.
-pub fn interpolate(shares: &[Share]) -> Vec<u8> {
-    (0..shares[0].y.len())
+pub fn interpolate<'a, I, J>(shares: I) -> Vec<u8>
+where
+    I: IntoIterator<Item = &'a Share, IntoIter = J>,
+    J: Iterator<Item = &'a Share> + Clone,
+{
+    let shares = shares.into_iter();
+    (0..shares
+        .clone()
+        .peekable()
+        .peek()
+        .expect("There should be at least one share")
+        .y
+        .len())
         .map(|s| {
             shares
-                .iter()
+                .clone()
                 .map(|s_i| {
                     shares
-                        .iter()
+                        .clone()
                         .filter(|s_j| s_j.x != s_i.x)
                         .map(|s_j| s_j.x / (s_j.x - s_i.x))
                         .product::<GF256>()

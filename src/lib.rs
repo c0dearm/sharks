@@ -82,8 +82,13 @@ impl Sharks {
     /// secret = sharks.recover(&shares);
     /// // Not enough shares to recover secret
     /// assert!(secret.is_err());
-    pub fn recover(&self, shares: &[Share]) -> Result<Vec<u8>, &str> {
-        let shares_x: HashSet<u8> = shares.iter().map(|s| s.x.0).collect();
+    pub fn recover<'a, I, J>(&self, shares: I) -> Result<Vec<u8>, &str>
+    where
+        I: IntoIterator<Item = &'a Share, IntoIter = J>,
+        J: Iterator<Item = &'a Share> + Clone,
+    {
+        let shares = shares.into_iter();
+        let shares_x: HashSet<u8> = shares.clone().map(|s| s.x.0).collect();
 
         if shares_x.len() < self.0 as usize {
             Err("Not enough shares to recover original secret")
