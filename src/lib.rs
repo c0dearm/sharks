@@ -21,6 +21,7 @@ mod share;
 
 use field::GF256;
 pub use share::Share;
+use std::collections::HashSet;
 
 /// Tuple struct which implements methods to generate shares and recover secrets over a 256 bits Galois Field.
 /// Its only parameter is the minimum shares threshold.
@@ -81,9 +82,9 @@ impl Sharks {
     /// // Not enough shares to recover secret
     /// assert!(secret.is_err());
     pub fn recover(&self, shares: &[Share]) -> Result<Vec<u8>, &str> {
-        // TODO: Discuss use of slice instead of hashmap here
+        let shares_x: HashSet<u8> = shares.iter().map(|s| s.x.0).collect();
 
-        if shares.len() < self.0 as usize {
+        if shares_x.len() < self.0 as usize {
             Err("Not enough shares to recover original secret")
         } else {
             Ok(math::interpolate(shares))
@@ -100,6 +101,19 @@ mod tests {
         let sharks = Sharks(255);
         let dealer = sharks.dealer(&[1]);
         let shares: Vec<Share> = dealer.take(254).collect();
+        let secret = sharks.recover(&shares);
+        assert!(secret.is_err());
+    }
+
+    #[test]
+    fn test_duplicate_shares_err() {
+        let sharks = Sharks(255);
+        let dealer = sharks.dealer(&[1]);
+        let mut shares: Vec<Share> = dealer.take(255).collect();
+        shares[1] = Share {
+            x: shares[0].x,
+            y: shares[0].y.clone(),
+        };
         let secret = sharks.recover(&shares);
         assert!(secret.is_err());
     }
