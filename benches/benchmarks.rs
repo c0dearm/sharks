@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-use sharks::Sharks;
+use sharks::{Share, Sharks};
 
 fn dealer(c: &mut Criterion) {
     let sharks = Sharks(255);
@@ -14,12 +14,26 @@ fn dealer(c: &mut Criterion) {
 
 fn recover(c: &mut Criterion) {
     let sharks = Sharks(255);
-    let shares = sharks.dealer(&[1]).take(255).collect();
+    let shares: Vec<Share> = sharks.dealer(&[1]).take(255).collect();
 
     c.bench_function("recover_secret", |b| {
-        b.iter(|| sharks.recover(black_box(&shares)))
+        b.iter(|| sharks.recover(black_box(shares.as_slice())))
     });
 }
 
-criterion_group!(benches, dealer, recover);
+fn share(c: &mut Criterion) {
+    let bytes_vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let bytes = bytes_vec.as_slice();
+    let share = Share::from(bytes);
+
+    c.bench_function("share_from_bytes", |b| {
+        b.iter(|| Share::from(black_box(bytes)))
+    });
+
+    c.bench_function("share_to_bytes", |b| {
+        b.iter(|| Vec::from(black_box(&share)))
+    });
+}
+
+criterion_group!(benches, dealer, recover, share);
 criterion_main!(benches);
