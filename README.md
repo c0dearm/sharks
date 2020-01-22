@@ -15,7 +15,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sharks = "0.2"
+sharks = "0.3"
 ```
 
 To get started using Sharks, see the [Rust docs](https://docs.rs/sharks)
