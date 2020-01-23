@@ -64,7 +64,7 @@ impl Sharks {
         math::get_evaluator(polys)
     }
 
-    /// Given a collection of shares, recovers the original secret.
+    /// Given an iterable collection of shares, recovers the original secret.
     /// If the number of distinct shares is less than the minimum threshold an `Err` is returned,
     /// otherwise an `Ok` containing the secret.
     ///
