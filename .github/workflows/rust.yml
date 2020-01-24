@@ -1,6 +1,6 @@
 on: [push, pull_request]
 
-name: Continuous Integration
+name: Rust
 
 jobs:
   check:
@@ -77,3 +77,12 @@ jobs:
       - uses: codecov/codecov-action@v1.0.5
         with:
           token: ${{secrets.CODECOV_TOKEN}}
+
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
