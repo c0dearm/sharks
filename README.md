@@ -1,9 +1,10 @@
 # Sharks
 
-[![CI](https://github.com/c0dearm/sharks/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/c0dearm/sharks/actions)
-[![Codecov](https://codecov.io/gh/c0dearm/sharks/branch/master/graph/badge.svg)](https://codecov.io/gh/c0dearm/sharks)
-[![Crate](https://img.shields.io/crates/v/sharks.svg)](https://crates.io/crates/sharks)
+[![Rust](https://github.com/c0dearm/sharks/workflows/Rust/badge.svg?branch=master)](https://github.com/c0dearm/sharks/actions)
+[![Crates](https://img.shields.io/crates/v/sharks.svg)](https://crates.io/crates/sharks)
 [![Docs](https://docs.rs/sharks/badge.svg)](https://docs.rs/sharks)
+[![Codecov](https://codecov.io/gh/c0dearm/sharks/branch/master/graph/badge.svg)](https://codecov.io/gh/c0dearm/sharks)
+[![License](https://camo.githubusercontent.com/47069b7e06b64b608c692a8a7f40bc6915cf629c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d417061636865322e302532464d49542d626c75652e737667)](https://github.com/c0dearm/sharks/blob/master/COPYRIGHT)
 
 Fast, small and secure [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) library crate
 
