@@ -19,6 +19,9 @@ mod field;
 mod math;
 mod share;
 
+#[cfg(target_arch = "wasm32")]
+pub mod wasm;
+
 use std::collections::HashSet;
 
 use field::GF256;

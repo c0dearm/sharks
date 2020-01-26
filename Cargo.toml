@@ -17,8 +17,17 @@ codecov = { repository = "https://github.com/c0dearm/sharks" }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 rand = "0.7"
+
+[target.'cfg(target_arch="wasm32")'.dependencies]
+serde = "1.0.104"
+serde_derive = "1.0.104"
+rand = { version = "0.7", features = ["wasm-bindgen"] }
+wasm-bindgen = { version = "0.2.58", features = ["serde-serialize"] }
 
 [dev-dependencies]
 criterion = "0.3"
