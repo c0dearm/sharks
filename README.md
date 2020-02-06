@@ -50,6 +50,7 @@ You can run them with `cargo test` and `cargo bench`.
 | CPU                                       | obtain_shares_dealer            | step_shares_dealer              | recover_secret                  | share_from_bytes                | share_to_bytes                  |
 | ----------------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- |
 | Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz  | [1.4321 us 1.4339 us 1.4357 us] | [1.3385 ns 1.3456 ns 1.3552 ns] | [228.77 us 232.17 us 236.23 us] | [24.688 ns 25.083 ns 25.551 ns] | [22.832 ns 22.910 ns 22.995 ns] |
+| Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz  | [1.3936 us 1.3967 us 1.3994 us] | [1.6256 ns 1.6281 ns 1.6306 ns] | [220.18 us 220.50 us 220.81 us] | [24.005 ns 24.032 ns 24.063 ns] | [22.385 ns 22.415 ns 22.449 ns] |
 
 # Contributing
 
