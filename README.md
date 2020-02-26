@@ -1,9 +1,10 @@
 # Sharks
 
-[![CI](https://github.com/c0dearm/sharks/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/c0dearm/sharks/actions)
-[![Codecov](https://codecov.io/gh/c0dearm/sharks/branch/master/graph/badge.svg)](https://codecov.io/gh/c0dearm/sharks)
-[![Crate](https://img.shields.io/crates/v/sharks.svg)](https://crates.io/crates/sharks)
+[![Rust](https://github.com/c0dearm/sharks/workflows/Rust/badge.svg?branch=master)](https://github.com/c0dearm/sharks/actions)
+[![Crates](https://img.shields.io/crates/v/sharks.svg)](https://crates.io/crates/sharks)
 [![Docs](https://docs.rs/sharks/badge.svg)](https://docs.rs/sharks)
+[![Codecov](https://codecov.io/gh/c0dearm/sharks/branch/master/graph/badge.svg)](https://codecov.io/gh/c0dearm/sharks)
+[![License](https://camo.githubusercontent.com/47069b7e06b64b608c692a8a7f40bc6915cf629c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d417061636865322e302532464d49542d626c75652e737667)](https://github.com/c0dearm/sharks/blob/master/COPYRIGHT)
 
 Fast, small and secure [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) library crate
 
@@ -49,6 +50,7 @@ You can run them with `cargo test` and `cargo bench`.
 | CPU                                       | obtain_shares_dealer            | step_shares_dealer              | recover_secret                  | share_from_bytes                | share_to_bytes                  |
 | ----------------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- |
 | Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz  | [1.4321 us 1.4339 us 1.4357 us] | [1.3385 ns 1.3456 ns 1.3552 ns] | [228.77 us 232.17 us 236.23 us] | [24.688 ns 25.083 ns 25.551 ns] | [22.832 ns 22.910 ns 22.995 ns] |
+| Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz  | [1.3439 us 1.3499 us 1.3562 us] | [1.5416 ns 1.5446 ns 1.5481 ns] | [197.46 us 198.37 us 199.22 us] | [20.455 ns 20.486 ns 20.518 ns] | [18.726 ns 18.850 ns 18.993 ns] |
 
 # Contributing
 
