@@ -58,7 +58,7 @@ const EXP_TABLE: [u8; 512] = [
     0x58, 0xb0, 0x7d, 0xfa, 0xe9, 0xcf, 0x83, 0x1b, 0x36, 0x6c, 0xd8, 0xad, 0x47, 0x8e, 0x01, 0x02,
 ];
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct GF256(pub u8);
 
 #[allow(clippy::suspicious_arithmetic_impl)]

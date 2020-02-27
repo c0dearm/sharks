@@ -64,7 +64,7 @@ impl Sharks {
         math::get_evaluator(polys)
     }
 
-    /// Given a slice of shares, recovers the original secret.
+    /// Given an iterable collection of shares, recovers the original secret.
     /// If the number of distinct shares is less than the minimum threshold an `Err` is returned,
     /// otherwise an `Ok` containing the secret.
     ///
@@ -82,13 +82,28 @@ impl Sharks {
     /// secret = sharks.recover(&shares);
     /// // Not enough shares to recover secret
     /// assert!(secret.is_err());
-    pub fn recover(&self, shares: &[Share]) -> Result<Vec<u8>, &str> {
-        let shares_x: HashSet<u8> = shares.iter().map(|s| s.x.0).collect();
+    pub fn recover<'a, T>(&self, shares: T) -> Result<Vec<u8>, &str>
+    where
+        T: IntoIterator<Item = &'a Share>,
+        T::IntoIter: Iterator<Item = &'a Share>,
+    {
+        let (keys, shares) = shares
+            .into_iter()
+            .map(|s| {
+                (
+                    s.x.0,
+                    Share {
+                        x: s.x,
+                        y: s.y.clone(),
+                    },
+                )
+            })
+            .unzip::<u8, Share, HashSet<u8>, Vec<Share>>();
 
-        if shares_x.len() < self.0 as usize {
+        if keys.len() < self.0 as usize {
             Err("Not enough shares to recover original secret")
         } else {
-            Ok(math::interpolate(shares))
+            Ok(math::interpolate(shares.as_slice()))
         }
     }
 }
