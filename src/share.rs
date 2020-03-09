@@ -21,6 +21,7 @@ use super::field::GF256;
 /// let shares_bytes: Vec<Vec<u8>> = ask_shares();
 /// let shares: Vec<Share> = shares_bytes.iter().map(|s| Share::from(s.as_slice())).collect();
 /// let secret = sharks.recover(&shares).unwrap();
+#[derive(Clone)]
 pub struct Share {
     pub x: GF256,
     pub y: Vec<GF256>,
