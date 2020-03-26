@@ -1,5 +1,8 @@
 // A module which contains necessary algorithms to compute Shamir's shares and recover secrets
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 use rand::distributions::{Distribution, Uniform};
 
 use super::field::GF256;
@@ -28,13 +31,10 @@ pub fn interpolate(shares: &[Share]) -> Vec<u8> {
         .collect()
 }
 
-// Generates `k` polynomial coefficients, being the last one `s` and the others randomly generated between `[1, 255]`.
-// Coefficient degrees go from higher to lower in the returned vector order.
-pub fn random_polynomial(s: GF256, k: u8) -> Vec<GF256> {
+pub fn random_polynomial_with_rng(mut rng: &mut impl rand::Rng, s: GF256, k: u8) -> Vec<GF256> {
     let k = k as usize;
     let mut poly = Vec::with_capacity(k);
     let between = Uniform::new_inclusive(1, 255);
-    let mut rng = rand::thread_rng();
 
     for _ in 1..k {
         poly.push(GF256(between.sample(&mut rng)));
@@ -42,6 +42,13 @@ pub fn random_polynomial(s: GF256, k: u8) -> Vec<GF256> {
     poly.push(s);
 
     poly
+}
+
+// Generates `k` polynomial coefficients, being the last one `s` and the others randomly generated between `[1, 255]`.
+// Coefficient degrees go from higher to lower in the returned vector order.
+#[cfg(feature = "std")]
+pub fn random_polynomial(s: GF256, k: u8) -> Vec<GF256> {
+    random_polynomial_with_rng(&mut rand::thread_rng(), s, k)
 }
 
 // Returns an iterator over the points of the `polys` polynomials passed as argument.

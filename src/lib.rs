@@ -15,10 +15,20 @@
 //! assert_eq!(secret, vec![1, 2, 3, 4]);
 //! ```
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 mod field;
 mod math;
 mod share;
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(not(feature = "std"))]
+use hashbrown::HashSet;
+
+#[cfg(feature = "std")]
 use std::collections::HashSet;
 
 use field::GF256;
@@ -54,11 +64,30 @@ impl Sharks {
     /// let dealer = sharks.dealer(&[1, 2]);
     /// // Get 3 shares
     /// let shares: Vec<Share> = dealer.take(3).collect();
+    #[cfg(feature = "std")]
     pub fn dealer(&self, secret: &[u8]) -> impl Iterator<Item = Share> {
         let mut polys = Vec::with_capacity(secret.len());
 
         for chunk in secret {
             polys.push(math::random_polynomial(GF256(*chunk), self.0))
+        }
+
+        math::get_evaluator(polys)
+    }
+
+    pub fn dealer_with_rng(
+        &self,
+        mut rng: &mut impl rand::Rng,
+        secret: &[u8],
+    ) -> impl Iterator<Item = Share> {
+        let mut polys = Vec::with_capacity(secret.len());
+
+        for chunk in secret {
+            polys.push(math::random_polynomial_with_rng(
+                &mut rng,
+                GF256(*chunk),
+                self.0,
+            ))
         }
 
         math::get_evaluator(polys)

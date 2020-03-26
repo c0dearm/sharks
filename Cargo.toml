@@ -17,8 +17,13 @@ codecov = { repository = "c0dearm/sharks" }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = ["std"]
+std = ["rand/std"]
+
 [dependencies]
-rand = "0.7"
+rand = { version = "0.7", default_features = false }
+hashbrown = "0.7.1"
 
 [dev-dependencies]
 criterion = "0.3"

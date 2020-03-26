@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 use super::field::GF256;
 
 /// A share used to reconstruct the secret. Can be serialized to and from a byte array.
