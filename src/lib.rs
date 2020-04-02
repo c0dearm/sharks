@@ -167,23 +167,27 @@ impl Sharks {
 #[cfg(test)]
 mod tests {
     use super::{Share, Sharks};
-    use alloc::vec::Vec;
-    #[cfg(not(feature = "std"))]
-    use rand_chacha::rand_core::SeedableRng;
+    use alloc::{vec, vec::Vec};
+
+    impl Sharks {
+        #[cfg(not(feature = "std"))]
+        fn make_shares(&self, secret: &[u8]) -> impl Iterator<Item = Share> {
+            use rand_chacha::{rand_core::SeedableRng, ChaCha8Rng};
+
+            let mut rng = ChaCha8Rng::from_seed([0x90; 32]);
+            self.dealer_rng(secret, &mut rng)
+        }
+
+        #[cfg(feature = "std")]
+        fn make_shares(&self, secret: &[u8]) -> impl Iterator<Item = Share> {
+            self.dealer(secret)
+        }
+    }
 
     #[test]
     fn test_insufficient_shares_err() {
         let sharks = Sharks(255);
-
-        #[cfg(not(feature = "std"))]
-        let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
-
-        #[cfg(feature = "std")]
-        let dealer = sharks.dealer(&[1]);
-        #[cfg(not(feature = "std"))]
-        let dealer = sharks.dealer_rng(&[1], &mut rng);
-
-        let shares: Vec<Share> = dealer.take(254).collect();
+        let shares: Vec<Share> = sharks.make_shares(&[1]).take(254).collect();
         let secret = sharks.recover(&shares);
         assert!(secret.is_err());
     }
@@ -191,16 +195,7 @@ mod tests {
     #[test]
     fn test_duplicate_shares_err() {
         let sharks = Sharks(255);
-
-        #[cfg(not(feature = "std"))]
-        let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
-
-        #[cfg(feature = "std")]
-        let dealer = sharks.dealer(&[1]);
-        #[cfg(not(feature = "std"))]
-        let dealer = sharks.dealer_rng(&[1], &mut rng);
-
-        let mut shares: Vec<Share> = dealer.take(255).collect();
+        let mut shares: Vec<Share> = sharks.make_shares(&[1]).take(255).collect();
         shares[1] = Share {
             x: shares[0].x,
             y: shares[0].y.clone(),
@@ -212,17 +207,8 @@ mod tests {
     #[test]
     fn test_integration_works() {
         let sharks = Sharks(255);
-
-        #[cfg(not(feature = "std"))]
-        let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
-
-        #[cfg(feature = "std")]
-        let dealer = sharks.dealer(&[1, 2, 3, 4]);
-        #[cfg(not(feature = "std"))]
-        let dealer = sharks.dealer_rng(&[1, 2, 3, 4], &mut rng);
-
-        let shares: Vec<Share> = dealer.take(255).collect();
+        let shares: Vec<Share> = sharks.make_shares(&[1, 2, 3, 4]).take(255).collect();
         let secret = sharks.recover(&shares).unwrap();
-        assert_eq!(secret, alloc::vec![1, 2, 3, 4]);
+        assert_eq!(secret, vec![1, 2, 3, 4]);
     }
 }

@@ -126,6 +126,7 @@ impl Product for GF256 {
 #[cfg(test)]
 mod tests {
     use super::{EXP_TABLE, GF256, LOG_TABLE};
+    use alloc::vec;
 
     #[test]
     fn add_works() {
@@ -206,13 +207,13 @@ mod tests {
 
     #[test]
     fn sum_works() {
-        let values = alloc::vec![GF256(0x53), GF256(0xCA), GF256(0)];
+        let values = vec![GF256(0x53), GF256(0xCA), GF256(0)];
         assert_eq!(values.into_iter().sum::<GF256>().0, 0x99);
     }
 
     #[test]
     fn product_works() {
-        let values = alloc::vec![GF256(1), GF256(1), GF256(4)];
+        let values = vec![GF256(1), GF256(1), GF256(4)];
         assert_eq!(values.into_iter().product::<GF256>().0, 4);
     }
 }
