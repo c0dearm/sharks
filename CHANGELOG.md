@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2020-04-02
+### Added
+- It is now possible to compile without `std` with `--no-default-features`
+
 ## [0.3.3] - 2020-03-23
 ### Changed
 - Fix codecov badge

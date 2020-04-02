@@ -1,5 +1,7 @@
 // A module which contains necessary algorithms to compute Shamir's shares and recover secrets
 
+use alloc::vec::Vec;
+
 use rand::distributions::{Distribution, Uniform};
 
 use super::field::GF256;
@@ -30,14 +32,13 @@ pub fn interpolate(shares: &[Share]) -> Vec<u8> {
 
 // Generates `k` polynomial coefficients, being the last one `s` and the others randomly generated between `[1, 255]`.
 // Coefficient degrees go from higher to lower in the returned vector order.
-pub fn random_polynomial(s: GF256, k: u8) -> Vec<GF256> {
+pub fn random_polynomial<R: rand::Rng>(s: GF256, k: u8, rng: &mut R) -> Vec<GF256> {
     let k = k as usize;
     let mut poly = Vec::with_capacity(k);
     let between = Uniform::new_inclusive(1, 255);
-    let mut rng = rand::thread_rng();
 
     for _ in 1..k {
-        poly.push(GF256(between.sample(&mut rng)));
+        poly.push(GF256(between.sample(rng)));
     }
     poly.push(s);
 
@@ -61,10 +62,13 @@ pub fn get_evaluator(polys: Vec<Vec<GF256>>) -> impl Iterator<Item = Share> {
 #[cfg(test)]
 mod tests {
     use super::{get_evaluator, interpolate, random_polynomial, Share, GF256};
+    use alloc::{vec, vec::Vec};
+    use rand_chacha::rand_core::SeedableRng;
 
     #[test]
     fn random_polynomial_works() {
-        let poly = random_polynomial(GF256(1), 3);
+        let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
+        let poly = random_polynomial(GF256(1), 3, &mut rng);
         assert_eq!(poly.len(), 3);
         assert_eq!(poly[2], GF256(1));
     }
@@ -81,7 +85,8 @@ mod tests {
 
     #[test]
     fn interpolate_works() {
-        let poly = random_polynomial(GF256(185), 10);
+        let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
+        let poly = random_polynomial(GF256(185), 10, &mut rng);
         let iter = get_evaluator(vec![poly]);
         let shares: Vec<Share> = iter.take(10).collect();
         let root = interpolate(&shares);

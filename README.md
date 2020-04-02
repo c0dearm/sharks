@@ -17,7 +17,14 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sharks = "0.3"
+sharks = "0.4"
+```
+
+If your environment doesn't support `std`:
+
+```toml
+[dependencies]
+sharks = { version = "0.4", default-features = false }
 ```
 
 To get started using Sharks, see the [Rust docs](https://docs.rs/sharks)

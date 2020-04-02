@@ -1,8 +1,8 @@
 // Basic operations overrided for the Galois Field 256 (2**8)
 // Uses pre-calculated tables for 0x11d primitive polynomial (x**8 + x**4 + x**3 + x**2 + 1)
 
-use std::iter::{Product, Sum};
-use std::ops::{Add, Div, Mul, Sub};
+use core::iter::{Product, Sum};
+use core::ops::{Add, Div, Mul, Sub};
 
 const LOG_TABLE: [u8; 256] = [
     0x00, 0x00, 0x01, 0x19, 0x02, 0x32, 0x1a, 0xc6, 0x03, 0xdf, 0x33, 0xee, 0x1b, 0x68, 0xc7, 0x4b,
@@ -126,6 +126,7 @@ impl Product for GF256 {
 #[cfg(test)]
 mod tests {
     use super::{EXP_TABLE, GF256, LOG_TABLE};
+    use alloc::vec;
 
     #[test]
     fn add_works() {
