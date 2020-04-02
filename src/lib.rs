@@ -1,22 +1,25 @@
 //! Fast, small and secure [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) library crate
 //!
 //! Usage example (std):
-//! ```ignore
+//! ```
 //! use sharks::{ Sharks, Share };
 //!
 //! // Set a minimum threshold of 10 shares
 //! let sharks = Sharks(10);
 //! // Obtain an iterator over the shares for secret [1, 2, 3, 4]
+//! # #[cfg(feature = "std")]
+//! # {
 //! let dealer = sharks.dealer(&[1, 2, 3, 4]);
 //! // Get 10 shares
 //! let shares: Vec<Share> = dealer.take(10).collect();
 //! // Recover the original secret!
 //! let secret = sharks.recover(shares.as_slice()).unwrap();
 //! assert_eq!(secret, vec![1, 2, 3, 4]);
+//! # }
 //! ```
 //!
-//! //! Usage example (no std):
-//! ```ignore
+//! Usage example (no std):
+//! ```
 //! use sharks::{ Sharks, Share };
 //! use rand_chacha::rand_core::SeedableRng;
 //!
@@ -49,17 +52,20 @@ pub use share::Share;
 /// Its only parameter is the minimum shares threshold.
 ///
 /// Usage example:
-/// ```ignore
+/// ```
 /// # use sharks::{ Sharks, Share };
 /// // Set a minimum threshold of 10 shares
 /// let sharks = Sharks(10);
 /// // Obtain an iterator over the shares for secret [1, 2, 3, 4]
+/// # #[cfg(feature = "std")]
+/// # {
 /// let dealer = sharks.dealer(&[1, 2, 3, 4]);
 /// // Get 10 shares
 /// let shares: Vec<Share> = dealer.take(10).collect();
 /// // Recover the original secret!
 /// let secret = sharks.recover(shares.as_slice()).unwrap();
 /// assert_eq!(secret, vec![1, 2, 3, 4]);
+/// # }
 /// ```
 pub struct Sharks(pub u8);
 
