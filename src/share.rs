@@ -1,4 +1,3 @@
-#[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
 
 use super::field::GF256;
@@ -8,12 +7,14 @@ use super::field::GF256;
 /// Usage example:
 /// ```
 /// use sharks::{Sharks, Share};
+/// # use rand_chacha::rand_core::SeedableRng;
 /// # fn send_to_printer(_: Vec<u8>) {}
 /// # fn ask_shares() -> Vec<Vec<u8>> {vec![vec![1, 2], vec![2, 3], vec![3, 4]]}
 ///
 /// // Transmit the share bytes to a printer
 /// let sharks = Sharks(3);
-/// let dealer = sharks.dealer(&[1, 2, 3]);
+/// let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
+/// let dealer = sharks.dealer_rng(&[1, 2, 3], &mut rng);
 ///
 /// // Get 5 shares and print paper keys
 /// for s in dealer.take(5) {
@@ -52,15 +53,16 @@ impl From<&[u8]> for Share {
 #[cfg(test)]
 mod tests {
     use super::{Share, GF256};
+    use alloc::vec::Vec;
 
     #[test]
     fn vec_from_share_works() {
         let share = Share {
             x: GF256(1),
-            y: vec![GF256(2), GF256(3)],
+            y: alloc::vec![GF256(2), GF256(3)],
         };
         let bytes = Vec::from(&share);
-        assert_eq!(bytes, vec![1, 2, 3]);
+        assert_eq!(bytes, alloc::vec![1, 2, 3]);
     }
 
     #[test]
@@ -68,6 +70,6 @@ mod tests {
         let bytes = [1, 2, 3];
         let share = Share::from(&bytes[..]);
         assert_eq!(share.x, GF256(1));
-        assert_eq!(share.y, vec![GF256(2), GF256(3)]);
+        assert_eq!(share.y, alloc::vec![GF256(2), GF256(3)]);
     }
 }

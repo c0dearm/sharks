@@ -1,6 +1,5 @@
 // A module which contains necessary algorithms to compute Shamir's shares and recover secrets
 
-#[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
 
 use rand::distributions::{Distribution, Uniform};
@@ -31,24 +30,19 @@ pub fn interpolate(shares: &[Share]) -> Vec<u8> {
         .collect()
 }
 
-pub fn random_polynomial_with_rng(mut rng: &mut impl rand::Rng, s: GF256, k: u8) -> Vec<GF256> {
+// Generates `k` polynomial coefficients, being the last one `s` and the others randomly generated between `[1, 255]`.
+// Coefficient degrees go from higher to lower in the returned vector order.
+pub fn random_polynomial<R: rand::Rng>(s: GF256, k: u8, rng: &mut R) -> Vec<GF256> {
     let k = k as usize;
     let mut poly = Vec::with_capacity(k);
     let between = Uniform::new_inclusive(1, 255);
 
     for _ in 1..k {
-        poly.push(GF256(between.sample(&mut rng)));
+        poly.push(GF256(between.sample(rng)));
     }
     poly.push(s);
 
     poly
-}
-
-// Generates `k` polynomial coefficients, being the last one `s` and the others randomly generated between `[1, 255]`.
-// Coefficient degrees go from higher to lower in the returned vector order.
-#[cfg(feature = "std")]
-pub fn random_polynomial(s: GF256, k: u8) -> Vec<GF256> {
-    random_polynomial_with_rng(&mut rand::thread_rng(), s, k)
 }
 
 // Returns an iterator over the points of the `polys` polynomials passed as argument.
@@ -68,30 +62,37 @@ pub fn get_evaluator(polys: Vec<Vec<GF256>>) -> impl Iterator<Item = Share> {
 #[cfg(test)]
 mod tests {
     use super::{get_evaluator, interpolate, random_polynomial, Share, GF256};
+    use alloc::vec::Vec;
+    use rand_chacha::rand_core::SeedableRng;
 
     #[test]
     fn random_polynomial_works() {
-        let poly = random_polynomial(GF256(1), 3);
+        let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
+        let poly = random_polynomial(GF256(1), 3, &mut rng);
         assert_eq!(poly.len(), 3);
         assert_eq!(poly[2], GF256(1));
     }
 
     #[test]
     fn evaluator_works() {
-        let iter = get_evaluator(vec![vec![GF256(3), GF256(2), GF256(5)]]);
+        let iter = get_evaluator(alloc::vec![alloc::vec![GF256(3), GF256(2), GF256(5)]]);
         let values: Vec<_> = iter.take(2).map(|s| (s.x, s.y)).collect();
         assert_eq!(
             values,
-            vec![(GF256(1), vec![GF256(4)]), (GF256(2), vec![GF256(13)])]
+            alloc::vec![
+                (GF256(1), alloc::vec![GF256(4)]),
+                (GF256(2), alloc::vec![GF256(13)])
+            ]
         );
     }
 
     #[test]
     fn interpolate_works() {
-        let poly = random_polynomial(GF256(185), 10);
-        let iter = get_evaluator(vec![poly]);
+        let mut rng = rand_chacha::ChaCha8Rng::from_seed([0x90; 32]);
+        let poly = random_polynomial(GF256(185), 10, &mut rng);
+        let iter = get_evaluator(alloc::vec![poly]);
         let shares: Vec<Share> = iter.take(10).collect();
         let root = interpolate(&shares);
-        assert_eq!(root, vec![185]);
+        assert_eq!(root, alloc::vec![185]);
     }
 }

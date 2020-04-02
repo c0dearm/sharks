@@ -1,6 +1,6 @@
 [package]
 name = "sharks"
-version = "0.3.3"
+version = "0.4.0"
 authors = ["Aitor Ruano <codearm@pm.me>"]
 description = "Fast, small and secure Shamir's Secret Sharing library crate"
 homepage = "https://github.com/c0dearm/sharks"
@@ -16,17 +16,17 @@ maintenance = { status = "actively-developed" }
 codecov = { repository = "c0dearm/sharks" }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [features]
 default = ["std"]
 std = ["rand/std"]
 
 [dependencies]
-rand = { version = "0.7", default_features = false }
-hashbrown = "0.7.1"
+rand = { version = "0.7", default-features = false }
+hashbrown = "0.7"
 
 [dev-dependencies]
 criterion = "0.3"
+rand_chacha = "0.2"
 
 [[bench]]
 name = "benchmarks"
