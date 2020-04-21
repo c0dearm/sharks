@@ -2,12 +2,16 @@ use alloc::vec::Vec;
 
 use super::field::GF256;
 
+#[cfg(feature = "fuzzing")]
+use arbitrary::Arbitrary;
+
 /// A share used to reconstruct the secret. Can be serialized to and from a byte array.
 ///
 /// Usage example:
 /// ```
 /// use sharks::{Sharks, Share};
 /// # use rand_chacha::rand_core::SeedableRng;
+/// # use core::convert::TryFrom;
 /// # fn send_to_printer(_: Vec<u8>) {}
 /// # fn ask_shares() -> Vec<Vec<u8>> {vec![vec![1, 2], vec![2, 3], vec![3, 4]]}
 ///
@@ -23,9 +27,10 @@ use super::field::GF256;
 ///
 /// // Get share bytes from an external source and recover secret
 /// let shares_bytes: Vec<Vec<u8>> = ask_shares();
-/// let shares: Vec<Share> = shares_bytes.iter().map(|s| Share::from(s.as_slice())).collect();
+/// let shares: Vec<Share> = shares_bytes.iter().map(|s| Share::try_from(s.as_slice()).unwrap()).collect();
 /// let secret = sharks.recover(&shares).unwrap();
 #[derive(Clone)]
+#[cfg_attr(feature = "fuzzing", derive(Arbitrary, Debug))]
 pub struct Share {
     pub x: GF256,
     pub y: Vec<GF256>,
@@ -42,11 +47,17 @@ impl From<&Share> for Vec<u8> {
 }
 
 /// Obtains a `Share` instance from a byte slice
-impl From<&[u8]> for Share {
-    fn from(s: &[u8]) -> Share {
-        let x = GF256(s[0]);
-        let y = s[1..].iter().map(|p| GF256(*p)).collect();
-        Share { x, y }
+impl core::convert::TryFrom<&[u8]> for Share {
+    type Error = &'static str;
+
+    fn try_from(s: &[u8]) -> Result<Share, Self::Error> {
+        if s.len() < 2 {
+            Err("A Share must be at least 2 bytes long")
+        } else {
+            let x = GF256(s[0]);
+            let y = s[1..].iter().map(|p| GF256(*p)).collect();
+            Ok(Share { x, y })
+        }
     }
 }
 
@@ -54,6 +65,7 @@ impl From<&[u8]> for Share {
 mod tests {
     use super::{Share, GF256};
     use alloc::{vec, vec::Vec};
+    use core::convert::TryFrom;
 
     #[test]
     fn vec_from_share_works() {
@@ -68,7 +80,7 @@ mod tests {
     #[test]
     fn share_from_u8_slice_works() {
         let bytes = [1, 2, 3];
-        let share = Share::from(&bytes[..]);
+        let share = Share::try_from(&bytes[..]).unwrap();
         assert_eq!(share.x, GF256(1));
         assert_eq!(share.y, vec![GF256(2), GF256(3)]);
     }

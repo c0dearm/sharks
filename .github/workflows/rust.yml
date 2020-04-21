@@ -18,7 +18,7 @@ jobs:
           command: check
 
   test-std:
-    name: Test
+    name: Test std
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -32,7 +32,7 @@ jobs:
           command: test
 
   test-nostd:
-    name: Test
+    name: Test no-std
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
