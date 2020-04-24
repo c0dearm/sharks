@@ -34,7 +34,7 @@
 //! let secret = sharks.recover(shares.as_slice()).unwrap();
 //! assert_eq!(secret, vec![1, 2, 3, 4]);
 //! ```
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 
 mod field;
 mod math;
@@ -143,23 +143,27 @@ impl Sharks {
         T: IntoIterator<Item = &'a Share>,
         T::IntoIter: Iterator<Item = &'a Share>,
     {
-        let (keys, shares) = shares
-            .into_iter()
-            .map(|s| {
-                (
-                    s.x.0,
-                    Share {
-                        x: s.x,
-                        y: s.y.clone(),
-                    },
-                )
-            })
-            .unzip::<u8, Share, HashSet<u8>, Vec<Share>>();
+        let mut share_length: Option<usize> = None;
+        let mut keys: HashSet<u8> = HashSet::new();
+        let mut values: Vec<Share> = Vec::new();
 
-        if keys.len() < self.0 as usize {
+        for share in shares.into_iter() {
+            if share_length.is_none() {
+                share_length = Some(share.y.len());
+            }
+
+            if Some(share.y.len()) != share_length {
+                return Err("All shares must have the same length");
+            } else {
+                keys.insert(share.x.0);
+                values.push(share.clone());
+            }
+        }
+
+        if keys.is_empty() || (keys.len() < self.0 as usize) {
             Err("Not enough shares to recover original secret")
         } else {
-            Ok(math::interpolate(shares.as_slice()))
+            Ok(math::interpolate(values.as_slice()))
         }
     }
 }
