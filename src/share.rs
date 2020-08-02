@@ -10,8 +10,8 @@ use arbitrary::Arbitrary;
 /// Usage example:
 /// ```
 /// use sharks::{Sharks, Share};
+/// use core::convert::TryFrom;
 /// # use rand_chacha::rand_core::SeedableRng;
-/// # use core::convert::TryFrom;
 /// # fn send_to_printer(_: Vec<u8>) {}
 /// # fn ask_shares() -> Vec<Vec<u8>> {vec![vec![1, 2], vec![2, 3], vec![3, 4]]}
 ///
