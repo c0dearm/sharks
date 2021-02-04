@@ -1,6 +1,6 @@
 [package]
 name = "sharks"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["Aitor Ruano <codearm@pm.me>"]
 description = "Fast, small and secure Shamir's Secret Sharing library crate"
 homepage = "https://github.com/c0dearm/sharks"
