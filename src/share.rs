@@ -5,6 +5,9 @@ use super::field::GF256;
 #[cfg(feature = "fuzzing")]
 use arbitrary::Arbitrary;
 
+#[cfg(feature = "zeroize_memory")]
+use zeroize::Zeroize;
+
 /// A share used to reconstruct the secret. Can be serialized to and from a byte array.
 ///
 /// Usage example:
@@ -31,6 +34,7 @@ use arbitrary::Arbitrary;
 /// let secret = sharks.recover(&shares).unwrap();
 #[derive(Clone)]
 #[cfg_attr(feature = "fuzzing", derive(Arbitrary, Debug))]
+#[cfg_attr(feature = "zeroize_memory", derive(Zeroize))]
 pub struct Share {
     pub x: GF256,
     pub y: Vec<GF256>,
