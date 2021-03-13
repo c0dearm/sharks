@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn evaluator_works() {
         let iter = get_evaluator(vec![vec![GF256(3), GF256(2), GF256(5)]]);
-        let values: Vec<_> = iter.take(2).map(|s| (s.x, s.y)).collect();
+        let values: Vec<_> = iter.take(2).map(|s| (s.x.clone(), s.y.clone())).collect();
         assert_eq!(
             values,
             vec![(GF256(1), vec![GF256(4)]), (GF256(2), vec![GF256(13)])]

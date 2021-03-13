@@ -35,6 +35,7 @@ use zeroize::Zeroize;
 #[derive(Clone)]
 #[cfg_attr(feature = "fuzzing", derive(Arbitrary, Debug))]
 #[cfg_attr(feature = "zeroize_memory", derive(Zeroize))]
+#[cfg_attr(feature = "zeroize_memory", zeroize(drop))]
 pub struct Share {
     pub x: GF256,
     pub y: Vec<GF256>,
