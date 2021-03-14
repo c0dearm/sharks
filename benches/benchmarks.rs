@@ -1,4 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use std::convert::TryFrom;
 
 use sharks::{Share, Sharks};
 
@@ -24,10 +25,10 @@ fn recover(c: &mut Criterion) {
 fn share(c: &mut Criterion) {
     let bytes_vec = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     let bytes = bytes_vec.as_slice();
-    let share = Share::from(bytes);
+    let share = Share::try_from(bytes).unwrap();
 
     c.bench_function("share_from_bytes", |b| {
-        b.iter(|| Share::from(black_box(bytes)))
+        b.iter(|| Share::try_from(black_box(bytes)))
     });
 
     c.bench_function("share_to_bytes", |b| {
