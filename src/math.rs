@@ -20,9 +20,9 @@ pub fn interpolate(shares: &[Share]) -> Vec<u8> {
                     shares
                         .iter()
                         .filter(|s_j| s_j.x != s_i.x)
-                        .map(|s_j| s_j.x / (s_j.x - s_i.x))
+                        .map(|s_j| s_j.x.clone() / (s_j.x.clone() - s_i.x.clone()))
                         .product::<GF256>()
-                        * s_i.y[s]
+                        * s_i.y[s].clone()
                 })
                 .sum::<GF256>()
                 .0
@@ -51,10 +51,13 @@ pub fn random_polynomial<R: rand::Rng>(s: GF256, k: u8, rng: &mut R) -> Vec<GF25
 // The iterator will start at `x = 1` and end at `x = 255`.
 pub fn get_evaluator(polys: Vec<Vec<GF256>>) -> impl Iterator<Item = Share> {
     (1..=u8::max_value()).map(GF256).map(move |x| Share {
-        x,
+        x: x.clone(),
         y: polys
             .iter()
-            .map(|p| p.iter().fold(GF256(0), |acc, c| acc * x + *c))
+            .map(|p| {
+                p.iter()
+                    .fold(GF256(0), |acc, c| acc * x.clone() + c.clone())
+            })
             .collect(),
     })
 }
@@ -76,7 +79,7 @@ mod tests {
     #[test]
     fn evaluator_works() {
         let iter = get_evaluator(vec![vec![GF256(3), GF256(2), GF256(5)]]);
-        let values: Vec<_> = iter.take(2).map(|s| (s.x, s.y)).collect();
+        let values: Vec<_> = iter.take(2).map(|s| (s.x.clone(), s.y.clone())).collect();
         assert_eq!(
             values,
             vec![(GF256(1), vec![GF256(4)]), (GF256(2), vec![GF256(13)])]
